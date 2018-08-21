@@ -9,7 +9,9 @@ export const SPECIAL_ASSET_REQUEST_NEW = 'SPECIAL_ASSET_REQUEST_NEW';
 export const REQUEST_LIST_ADD = 'REQUEST_LIST_ADD';
 
 // asset actions
-export const ASSET_ADD = `ASSET_ADD`;
+export const ASSET_ADD = 'ASSET_ADD';
+export const ASSET_UPDATE_CLAIMDATA = 'ASSET_UPDATE_CLAIMDATA';
+export const ASSET_REMOVE = 'ASSET_REMOVE';
 
 // channel actions
 export const CHANNEL_ADD = 'CHANNEL_ADD';
