@@ -19,6 +19,7 @@ class PublishDetails extends React.Component {
     this.props.startPublish(this.props.history);
   }
   render () {
+    const { disableAnonPublishing, publishInChannel } = this.props;
     return (
       <div>
         <Row>
@@ -43,6 +44,7 @@ class PublishDetails extends React.Component {
           <ButtonPrimaryJumbo
             value={'Publish'}
             onClickHandler={this.onPublishSubmit}
+            disabled={disableAnonPublishing && !publishInChannel}
           />
         </Row>
 

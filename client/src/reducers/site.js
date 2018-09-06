@@ -1,13 +1,14 @@
 import siteConfig from '@config/siteConfig.json';
 
 let initialState = {
-  description       : 'default description',
-  googleAnalyticsId : 'default google id',
-  host              : 'default host',
-  title             : 'default title',
-  twitter           : 'default twitter',
-  defaultDescription: 'default description',
-  defaultThumbnail  : 'default thumbnail',
+  description          : 'default description',
+  googleAnalyticsId    : 'default google id',
+  host                 : 'default host',
+  title                : 'default title',
+  twitter              : 'default twitter',
+  defaultDescription   : 'default description',
+  defaultThumbnail     : 'default thumbnail',
+  disableAnonPublishing: false,
 };
 
 if (siteConfig) {
@@ -25,6 +26,9 @@ if (siteConfig) {
       title,
       twitter,
     },
+    publishing: {
+      disableAnonPublishing,
+    },
   } = siteConfig;
 
   initialState = {
@@ -35,6 +39,7 @@ if (siteConfig) {
     twitter,
     defaultDescription,
     defaultThumbnail,
+    disableAnonPublishing,
   };
 }
 

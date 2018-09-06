@@ -1,6 +1,6 @@
 const logger = require('winston');
 
-const { details: { host }, publishing: { disabled, disabledMessage } } = require('@config/siteConfig');
+const { details: { host }, publishing: { disabled, disabledMessage, disableAnonPublishing } } = require('@config/siteConfig');
 
 const { sendGATimingEvent } = require('../../../../utils/googleAnalytics.js');
 
@@ -16,6 +16,7 @@ const parsePublishApiRequestFiles = require('./parsePublishApiRequestFiles.js');
 const authenticateUser = require('./authentication.js');
 
 const CLAIM_TAKEN = 'CLAIM_TAKEN';
+const NO_ANONYMOUS_PUBLISHING = 'NO_ANONYMOUS_PUBLISHING';
 
 /*
 
@@ -45,8 +46,8 @@ const claimPublish = ({ body, files, headers, ip, originalUrl, user, tor }, res)
   // validate the body and files of the request
   try {
     // validateApiPublishRequest(body, files);
-    ({name, nsfw, license, title, description, thumbnail} = parsePublishApiRequestBody(body));
-    ({fileName, filePath, fileExtension, fileType, thumbnailFileName, thumbnailFilePath, thumbnailFileType} = parsePublishApiRequestFiles(files));
+    // ({name, nsfw, license, title, description, thumbnail} = parsePublishApiRequestBody(body));
+    // ({fileName, filePath, fileExtension, fileType, thumbnailFileName, thumbnailFilePath, thumbnailFileType} = parsePublishApiRequestFiles(files));
     ({channelName, channelId, channelPassword} = body);
   } catch (error) {
     return res.status(400).json({success: false, message: error.message});
@@ -54,6 +55,17 @@ const claimPublish = ({ body, files, headers, ip, originalUrl, user, tor }, res)
   // check channel authorization
   authenticateUser(channelName, channelId, channelPassword, user)
     .then(({ channelName, channelClaimId }) => {
+      if (disableAnonPublishing && !channelName) {
+        const error = {
+          name   : NO_ANONYMOUS_PUBLISHING,
+          message: 'This spee.ch instance does not allow anonymous publishing',
+        };
+        throw error;
+      }
+
+      ({name, nsfw, license, title, description, thumbnail} = parsePublishApiRequestBody(body));
+      ({fileName, filePath, fileExtension, fileType, thumbnailFileName, thumbnailFilePath, thumbnailFileType} = parsePublishApiRequestFiles(files));
+
       return Promise.all([
         checkClaimAvailability(name),
         createPublishParams(filePath, name, title, description, license, nsfw, thumbnail, channelName, channelClaimId),
@@ -94,6 +106,13 @@ const claimPublish = ({ body, files, headers, ip, originalUrl, user, tor }, res)
     .catch(error => {
       if (error.name === CLAIM_TAKEN) {
         res.status(400).json({
+          success: false,
+          message: error.message,
+        });
+      }
+      if (error.name === NO_ANONYMOUS_PUBLISHING) {
+        logger.info('anonymous publish attempted; failed');
+        res.status(405).json({
           success: false,
           message: error.message,
         });

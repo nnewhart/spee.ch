@@ -2,9 +2,11 @@ import { connect } from 'react-redux';
 import { clearFile, startPublish } from '../../actions/publish';
 import View from './view';
 
-const mapStateToProps = ({ channel, publish }) => {
+const mapStateToProps = ({ channel, publish, site }) => {
   return {
-    file: publish.file,
+    file                 : publish.file,
+    disableAnonPublishing: site.disableAnonPublishing,
+    publishInChannel     : publish.publishInChannel,
   };
 };
 

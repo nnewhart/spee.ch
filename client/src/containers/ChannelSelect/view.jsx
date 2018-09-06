@@ -12,7 +12,9 @@ import ChannelSelectDropdown from '@components/ChannelSelectDropdown';
 class ChannelSelect extends React.Component {
   constructor (props) {
     super(props);
-    this.toggleAnonymousPublish = this.toggleAnonymousPublish.bind(this);
+    if (!props.disableAnonPublishing) {
+      this.toggleAnonymousPublish = this.toggleAnonymousPublish.bind(this);
+    }
     this.handleSelection = this.handleSelection.bind(this);
   }
   componentWillMount () {
@@ -34,28 +36,42 @@ class ChannelSelect extends React.Component {
     this.props.onChannelSelect(selectedOption);
   }
   render () {
-    const { publishInChannel, channelError, selectedChannel, loggedInChannelName } = this.props;
+    const {
+      publishInChannel,
+      channelError,
+      selectedChannel,
+      loggedInChannelName,
+      disableAnonPublishing,
+    } = this.props;
     return (
       <div>
-        <RowLabeled
-          label={
-            <ChooseAnonymousPublishRadio
-              publishInChannel={publishInChannel}
-              toggleAnonymousPublish={this.toggleAnonymousPublish}
+        {disableAnonPublishing ? (
+          <FormFeedbackDisplay
+            errorMessage={channelError}
+            defaultMessage={'Choose a channel'}
+          />
+        ) : (
+          <React.Fragment>
+            <RowLabeled
+              label={
+                <ChooseAnonymousPublishRadio
+                  publishInChannel={publishInChannel}
+                  toggleAnonymousPublish={this.toggleAnonymousPublish}
+                />
+              }
+              content={
+                <ChooseChannelPublishRadio
+                  publishInChannel={publishInChannel}
+                  toggleAnonymousPublish={this.toggleAnonymousPublish}
+                />
+              }
             />
-          }
-          content={
-            <ChooseChannelPublishRadio
-              publishInChannel={publishInChannel}
-              toggleAnonymousPublish={this.toggleAnonymousPublish}
+            <FormFeedbackDisplay
+              errorMessage={channelError}
+              defaultMessage={'Publish anonymously or in a channel'}
             />
-          }
-        />
-        <FormFeedbackDisplay
-          errorMessage={channelError}
-          defaultMessage={'Publish anonymously or in a channel'}
-        />
-
+          </React.Fragment>
+        )}
         { this.props.publishInChannel && (
           <div>
             <RowLabeled

@@ -2,12 +2,13 @@ import {connect} from 'react-redux';
 import {setPublishInChannel, updateSelectedChannel, updateError} from '../../actions/publish';
 import View from './view';
 
-const mapStateToProps = ({ channel, publish }) => {
+const mapStateToProps = ({ channel, publish, site }) => {
   return {
-    loggedInChannelName: channel.loggedInChannel.name,
-    publishInChannel   : publish.publishInChannel,
-    selectedChannel    : publish.selectedChannel,
-    channelError       : publish.error.channel,
+    loggedInChannelName  : channel.loggedInChannel.name,
+    publishInChannel     : site.disableAnonPublishing ? true : publish.publishInChannel,
+    selectedChannel      : publish.selectedChannel,
+    channelError         : publish.error.channel,
+    disableAnonPublishing: site.disableAnonPublishing,
   };
 };
 
