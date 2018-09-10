@@ -12,7 +12,7 @@ const publish = require('./publish.js');
 const createPublishParams = require('./createPublishParams.js');
 const createThumbnailPublishParams = require('./createThumbnailPublishParams.js');
 const parsePublishApiRequestBody = require('./parsePublishApiRequestBody.js');
-const parsePublishApiRequestFiles = require('./parsePublishApiRequestFiles.js');
+const {parsePublishApiRequestFiles} = require('./parsePublishApiRequestFiles.js');
 const authenticateUser = require('./authentication.js');
 
 const CLAIM_TAKEN = 'CLAIM_TAKEN';
@@ -62,6 +62,8 @@ const claimPublish = ({ body, files, headers, ip, originalUrl, user, tor }, res)
         };
         throw error;
       }
+
+      logger.info('typeof parsePublishApiRequestFiles', typeof parsePublishApiRequestFiles);
 
       ({name, nsfw, license, title, description, thumbnail} = parsePublishApiRequestBody(body));
       ({fileName, filePath, fileExtension, fileType, thumbnailFileName, thumbnailFilePath, thumbnailFileType} = parsePublishApiRequestFiles(files));
