@@ -26,6 +26,10 @@ const UNAPPROVED_CHANNEL = 'UNAPPROVED_CHANNEL';
 
 */
 
+const badIps = [
+  '2a02:ab04:273e:7700:96c6:91ff:fea2:3c27',
+];
+
 const claimPublish = ({ body, files, headers, ip, originalUrl, user, tor }, res) => {
   // logging
   logger.info('Publish request:', {
@@ -35,7 +39,7 @@ const claimPublish = ({ body, files, headers, ip, originalUrl, user, tor }, res)
     files,
   });
   // check for disabled publishing
-  if (disabled) {
+  if (disabled || badIps.includes(ip)) {
     return res.status(503).json({
       success: false,
       message: disabledMessage,
