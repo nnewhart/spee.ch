@@ -31,13 +31,6 @@ const badIps = [
 ];
 
 const claimPublish = ({ body, files, headers, ip, originalUrl, user, tor }, res) => {
-  // logging
-  logger.info('Publish request:', {
-    ip,
-    headers,
-    body,
-    files,
-  });
   // check for disabled publishing
   if (disabled || badIps.includes(ip)) {
     if (!disabled) {
@@ -48,6 +41,13 @@ const claimPublish = ({ body, files, headers, ip, originalUrl, user, tor }, res)
       message: disabledMessage,
     });
   }
+  // logging
+  logger.info('Publish request:', {
+    ip,
+    headers,
+    body,
+    files,
+  });
   // define variables
   let  channelName, channelId, channelPassword, description, fileName, filePath, fileExtension, fileType, gaStartTime, license, name, nsfw, thumbnail, thumbnailFileName, thumbnailFilePath, thumbnailFileType, title;
   // record the start time of the request
