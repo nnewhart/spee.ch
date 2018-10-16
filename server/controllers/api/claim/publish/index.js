@@ -40,6 +40,9 @@ const claimPublish = ({ body, files, headers, ip, originalUrl, user, tor }, res)
   });
   // check for disabled publishing
   if (disabled || badIps.includes(ip)) {
+    if (!disabled) {
+      logger.info(`nefarious ip ${ip} attempted to publish`);
+    }
     return res.status(503).json({
       success: false,
       message: disabledMessage,
